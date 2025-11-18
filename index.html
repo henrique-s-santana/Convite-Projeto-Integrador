@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convite Integrador</title>
+
+<style>
+/* ------------------- RESET ------------------- */
+
+.info-line {
+  display: flex;
+  align-items: flex-start;
+  
+}
+
+/* ====== EFEITO DE BRILHO PASSANDO NO CARD (FUNCIONANDO) ====== */
+.card-content {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.18) 45%,
+    rgba(255,255,255,0.35) 50%,
+    rgba(255,255,255,0.18) 55%,
+    transparent 100%
+  );
+  animation: shine 3.0s infinite ease-in-out;
+}
+
+@keyframes shine {
+  0% { left: -150%; }
+  50% { left: 150%; }
+  100% { left: 150%; }
+}
+
+
+/* ===== ALINHAMENTO DO ÍCONE E TEXTO ===== */
+.info-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ------------------- CURSOR GRADIENTE ------------------- */
+#cursor-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  transition: 200ms;
+}
+
+/* ------------------- GRID DE FUNDO ------------------- */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ------------------- LINHAS ANIMADAS ------------------- */
+.animated-lines div {
+  position: absolute;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, transparent, cyan, transparent);
+  animation: slide 12s linear infinite;
+}
+@keyframes slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* ------------------- HERO ------------------- */
+.hero {
+  padding: 180px 10%;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+.hero h1 {
+  font-size: 64px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+.hero p {
+  font-size: 22px;
+  color: #bbb;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* ------------------- PROJECT INFO (integrado) ------------------- */
+.section-project {
+  padding: 120px 10%;
+  position: relative;
+  z-index: 10;
+}
+
+.section-title {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 80px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.8s forwards;
+}
+
+.section-title h2 {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.gradient-title {
+  background: linear-gradient(to right, #a3e635, #22d3ee);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: #9ca3af;
+  font-size: 20px;
+  margin-top: 20px;
+}
+
+.cards-grid {
+  display: flex;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  
+  justify-content: center;
+  align-items: center;
+
+  gap: 40px;
+}
+
+.card {
+  position: relative;
+  cursor: pointer;
+  transform: translateY(30px);
+  opacity: 0;
+  animation: fadeUp 0.7s forwards;
+}
+
+.card:nth-child(2){ animation-delay: .2s; }
+.card:nth-child(3){ animation-delay: .4s; }
+
+.card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  filter: blur(30px);
+  opacity: 0;
+  transition: 0.4s;
+}
+
+.card-content {
+  position: relative;
+  padding: 40px;
+  border-radius: 20px;
+  border: 2px solid;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 20px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cyan-bg {
+  background: linear-gradient(to bottom right, #06b6d4, #0891b2);
+}
+.magenta-bg {
+  background: linear-gradient(to bottom right, #db2777, #be185d);
+}
+.lime-bg {
+  background: linear-gradient(to bottom right, #a3e635, #65a30d);
+}
+
+.card[data-color="cyan"] .card-content { border-color: #06b6d4; }
+.card[data-color="cyan"] .card-glow { background: #06b6d4; }
+
+.card[data-color="magenta"] .card-content { border-color: #db2777; }
+.card[data-color="magenta"] .card-glow { background: #db2777; }
+
+.card[data-color="lime"] .card-content { border-color: #a3e635; }
+.card[data-color="lime"] .card-glow { background: #a3e635; }
+
+.card:hover .card-content { transform: scale(1.05); }
+.card:hover .card-glow { opacity: .3; }
+
+/* Fade animation */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------- CTA SECTION ------------------- */
+.cta-section {
+  text-align: center;
+  padding: 120px 10%;
+  z-index: 10;
+  position: relative;
+}
+.cta-btn {
+  padding: 16px 40px;
+  font-size: 22px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(to right, #06b6d4, #22d3ee);
+  color: white;
+  margin-top: 40px;
+}
+
+/* ------------------- PARTÍCULAS ------------------- */
+.particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: cyan;
+  border-radius: 50%;
+  z-index: 0;
+  animation: float 4s infinite ease-in-out;
+}
+@keyframes float {
+  0% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-40px); }
+  100% { opacity: 0; }
+}
+
+/* ===========================
+   📱 RESPONSIVIDADE MELHORADA
+   =========================== */
+
+/* TABLETS E TELAS MÉDIAS */
+@media (max-width: 900px) {
+
+  .hero {
+    padding: 130px 6%;
+  }
+
+  .hero h1 {
+    font-size: 46px;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+
+  .cards-grid {
+    gap: 30px;
+    padding-inline: 6%;
+  }
+
+  .card-content {
+    padding: 32px;
+  }
+}
+
+
+/* CELULARES GRANDES */
+@media (max-width: 650px) {
+
+  .hero {
+    padding: 120px 5%;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+    line-height: 1.2;
+  }
+
+  .hero p {
+    font-size: 17px;
+    max-width: 90%;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .card-content {
+    padding: 28px;
+  }
+
+  .icon {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+
+/* CELULARES PEQUENOS */
+@media (max-width: 450px) {
+  
+  .hero {
+    padding: 100px 4%;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  .card-content {
+    padding: 22px;
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .section-title h2 {
+    font-size: 26px;
+  }
+}
+
+.cor{
+  color:#06b6d4
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR ILUMINADO -->
+<div id="cursor-glow"></div>
+
+<!-- GRID DE FUNDO -->
+<div class="grid-bg"></div>
+
+<!-- LINHAS ANIMADAS -->
+<div class="animated-lines">
+  <div style="top: 10%; animation-duration: 12s;"></div>
+  <div style="top: 25%; animation-duration: 14s;"></div>
+  <div style="top: 40%; animation-duration: 16s;"></div>
+  <div style="top: 60%; animation-duration: 18s;"></div>
+  <div style="top: 80%; animation-duration: 20s;"></div>
+</div>
+
+<!-- PARTÍCULAS -->
+<script>
+for (let i = 0; i < 25; i++) {
+  const p = document.createElement("div");
+  p.classList.add("particle");
+  p.style.left = Math.random()*100 + "%";
+  p.style.top = Math.random()*100 + "%";
+  p.style.animationDelay = Math.random()*3 + "s";
+  document.body.appendChild(p);
+}
+</script>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 class="cor" >PROJETO INTEGRADOR <br>2024-2025</h1>
+  <p>CONVITE ESPECIAL – APRESENTAÇÃO DO PROJETO INTEGRADOR <BR></BR>TÉCNICO EM INFORMÁTICA - TURMA .0008<br> <br>
+
+    É com grande satisfação que convidamos todas as turmas para participar da apresentação do Projeto Integrador da Turma de Técnico em Informática 2024–2025.<br> <br>
+    <!-- PROJECT INFO (integrado) -->
+
+    <div class="cards-grid">
+
+      <div class="card-content">
+
+        <div class="info-line">
+          <div class="icon cyan-bg">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <path d="M4 17l6-5-6-5"></path>
+              <path d="M12 19h8"></path>
+            </svg>
+          </div>
+
+          <p>
+            Data: <br>19/11/2025 (quarta-feira)<br><br>
+            ⏰ Horário: <br>Durante o período de aula <br><br>
+            📍 Local:<br>Laboratório de Informática - Senac -Curvelo/MG <br><br>
+          </p>
+        </div>
+
+</div>
+
+
+    </div>
+
+    <br> <br> Será um momento de inovação, criatividade e tecnologia, onde os alunos irão mostrar o resultado de muito esforço, aprendizado e colaboração.<br> <br>
+
+
+    Venham todos bater seu ponto na tecnologia e prestigiar esse grande momento! <br> 
+
+    Contamos com a presença de todos!
+  </p>
+  <br><br>
+<div class="cards-grid">
+
+      <div class="card-content">
+        <h2>Turma Técnico em Informática</h2>
+        <br>
+          <p>
+            Henrique Souza Santana <br>
+            <br>
+            Hericles Paulo da Silva Mendes <br>
+            <br>
+            De Yu Chien <br>
+            <br>
+            Erick Pereira de Deus Santos <br>
+            <br>
+            Cassia Valu <br>
+            <br>
+            Luiz Otavio Rodrigues Barboza <br>
+            <br>
+            Ryan Santos Mendes <br>
+            <br>
+            Ilton Ferrari <br>
+            <br>
+            Sueli Maria Gomes dos Santos <br>
+            <br>
+            Sâmela Luiza Alves Rodrigues <br>
+          </p>
+      </div>
+
+
+
+
+<!-- SCRIPT DO CURSOR -->
+<script>
+document.addEventListener("mousemove", (e) => {
+  const glow = document.getElementById("cursor-glow");
+  glow.style.background = `radial-gradient(600px at ${e.clientX}px ${e.clientY}px, rgba(0,255,255,0.15), transparent 70%)`;
+});
+
+/* Observer (para animações aparecerem ao rolar) */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = "running";
+    }
+  });
+}, {threshold: .25});
+
+document.querySelectorAll(".card, .section-title")
+  .forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
